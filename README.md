@@ -11,7 +11,7 @@
 ### Installation
 
 ```bash
-pip install opencv-python numpy onnxruntime mediapipe
+pip install -r requirements.txt
 ```
 
 ## How to Run the Project
