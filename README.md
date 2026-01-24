@@ -1,3 +1,4 @@
+
 # ArcFace ONNX Face Recognition
 
 ## Requirements
@@ -46,5 +47,3 @@ python -m src.recognize
     * **d** = toggle debug overlay
 
 Each detected face is aligned, embedded, and compared to the database using cosine similarity.
-
-
