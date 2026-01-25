@@ -1,4 +1,4 @@
 opencv-python
 numpy
-onnxruntime
-mediapipe
+onnxruntime>=1.15.1
+mediapipe==0.10.11

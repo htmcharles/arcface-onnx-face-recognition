@@ -289,7 +289,7 @@ def main():
                         fn = person_dir / f"{int(time.time() * 1000)}.jpg"
                         cv2.imwrite(str(fn), aligned)
 
-            if key == ord("s"):
+            if key == ord("s") or (auto and len(new_samples) >= cfg.samples_needed):
                 total = len(base_samples) + len(new_samples)
                 if total < max(3, cfg.samples_needed // 2):
                     status_msg = f"Not enough total samples to save (have {total})."
@@ -316,8 +316,28 @@ def main():
                 # reload base from disk so UI matches reality
                 base_samples = load_existing_samples_from_crops(cfg, emb, person_dir)
                 new_samples.clear()
+                
+                if auto:
+                    print(f"Reached target ({cfg.samples_needed}). Auto-saved and stopping auto-capture.")
+                    auto = False
 
     finally:
+        # Final check: if we have enough NEW samples but user didn't press 's', save anyway
+        total = len(base_samples) + len(new_samples)
+        if new_samples and total >= 3:
+            print(f"\nFinal Auto-Save: Saving {len(new_samples)} new samples for '{name}' before exit...")
+            all_samples = base_samples + new_samples
+            template = mean_embedding(all_samples)
+            db[name] = template
+            meta = {
+                "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "embedding_dim": int(template.size),
+                "names": sorted(db.keys()),
+                "samples_total_used": int(len(all_samples)),
+            }
+            save_db(cfg, db, meta)
+            print("Successfully saved to database.")
+
         cap.release()
         cv2.destroyAllWindows()
 
