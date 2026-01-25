@@ -1,1 +1,3 @@
 models/*.onnx
+config.bat
+node_modules
